@@ -1,0 +1,45 @@
+﻿@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Home page";
+}
+<form>
+    Email : <input type="email" id="email" />
+    Password : <input type="password" id="password" />
+    <button>Submit</button>
+
+</form>
+<script src="https://code.jquery.com/jquery-3.4.1.js"
+        integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU="
+        crossorigin="anonymous"></script>
+<script>
+    $(document).ready(function () {
+        $('form').submit(function (e) {
+            var email = $('#email').val();
+            var password = $('#password').val();
+            var url = "http://localhost:5000/api/user/" + email + "/"+password;
+            e.preventDefault();
+            $.get(url, $(this).serialize()).then(function (data) {
+                localStorage.setItem('token', data);
+                testfunction();
+            }).catch(function (err) {
+                console.log('fail', err);
+            });
+
+        });
+
+        function testfunction() {
+            $.ajax({
+                url: 'http://localhost:5000/api/employees',
+                method: 'GET',
+                headers: { 'Authorization': 'Bearer ' + localStorage.getItem('token') }
+            }).then(function (data) {
+                console.log('sucess', data);
+            }).catch(function (err) {
+                console.log('fail', err);
+            })
+        }
+        });
+
+
+</script>

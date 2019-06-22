@@ -12,7 +12,7 @@ namespace trainingmiddleware.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
+    [Authorize(Policy = "MinTime")]
     public class EmployeesController : ControllerBase
     {
         private readonly DOTNETCOREContext _context;

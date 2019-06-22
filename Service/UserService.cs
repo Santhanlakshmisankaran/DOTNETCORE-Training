@@ -39,7 +39,7 @@ namespace trainingmiddleware.Service
                 Expires = DateTime.UtcNow.AddMinutes(5),
                 Subject = new ClaimsIdentity(new List<Claim>
                 { new Claim("UserId",user.UserId.ToString()),
-                //new Claim("creationTime", user.)
+                  new Claim("creationTime", user.CreatedTime.Value.Ticks.ToString())
                 }),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(secretkey), SecurityAlgorithms.HmacSha256Signature)
             };

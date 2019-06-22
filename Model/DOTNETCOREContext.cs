@@ -22,7 +22,7 @@ namespace trainingmiddleware.Model
         {
             if (!optionsBuilder.IsConfigured)
             {
-//#warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
+#warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
                 optionsBuilder.UseSqlServer("Data Source=PC415275;Initial Catalog=DOTNETCORE;Integrated Security=true");
             }
         }
@@ -51,6 +51,10 @@ namespace trainingmiddleware.Model
             modelBuilder.Entity<User>(entity =>
             {
                 entity.Property(e => e.UserId).HasColumnName("UserID");
+
+                entity.Property(e => e.CreatedTime)
+                    .HasColumnType("datetime")
+                    .HasDefaultValueSql("(getdate())");
 
                 entity.Property(e => e.EmailId)
                     .HasColumnName("EmailID")

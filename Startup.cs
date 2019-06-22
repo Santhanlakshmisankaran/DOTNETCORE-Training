@@ -18,6 +18,8 @@ using trainingmiddleware.Service;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using System.Text;
 using Microsoft.IdentityModel.Tokens;
+using trainingmiddleware.Policy;
+using Microsoft.AspNetCore.Authorization;
 
 namespace trainingmiddleware
 {
@@ -33,6 +35,7 @@ namespace trainingmiddleware
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddCors();
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
             services.AddDbContext<DOTNETCOREContext>();
             services.AddSwaggerGen(c =>
@@ -55,6 +58,13 @@ namespace trainingmiddleware
                     IssuerSigningKey = new SymmetricSecurityKey(secretkey),
                 };
             });
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("MinTime", policy =>
+                 policy.Requirements.Add(new AccessTimeRequirment(5)));
+            }
+            );
+            services.AddSingleton<IAuthorizationHandler, AccessTimeHandler>();
          }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -70,8 +80,12 @@ namespace trainingmiddleware
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
+            app.UseCors(x => x
+                        .AllowAnyHeader()
+                        .AllowAnyMethod()
+                        .AllowAnyOrigin());
 
-            app.UseHttpsRedirection();
+           // app.UseHttpsRedirection();
             app.UseAuthentication();
             app.UseCustomMiddleware(new CustomMiddlewareOptions
             {
